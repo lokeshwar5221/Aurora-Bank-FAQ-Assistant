@@ -447,4 +447,3 @@ elif page == NAV_KB:
     page_knowledge_base()
 else:
     page_how_it_works()
- 
