@@ -1,0 +1,7 @@
+streamlit>=1.40,<1.50
+python-dotenv
+openai>=1.40
+numpy
+scikit-learn
+fastembed
+pypdf
