@@ -21,6 +21,9 @@ def fingerprint(chunks: list[Chunk], embedder_name: str) -> str:
     for c in chunks:
         h.update(c.chunk_id.encode("utf-8"))
         h.update(c.embed_text.encode("utf-8"))
+        h.update((c.policy_id or "").encode("utf-8"))
+        h.update((c.version or "").encode("utf-8"))
+        h.update((c.effective_date or "").encode("utf-8"))
     return h.hexdigest()
 
 

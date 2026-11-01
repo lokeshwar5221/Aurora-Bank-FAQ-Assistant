@@ -5,3 +5,4 @@ numpy
 scikit-learn
 fastembed
 pypdf
+pytest>=8,<9

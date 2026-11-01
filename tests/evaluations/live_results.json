@@ -1,0 +1,660 @@
+{
+  "generated_at": "2026-11-01T16:52:06.989843+00:00",
+  "provider": "Groq OpenAI-compatible API",
+  "model": "openai/gpt-oss-120b",
+  "embedder": "fastembed:all-MiniLM-L6-v2",
+  "total_cases": 10,
+  "completed_cases": 10,
+  "passed_cases": 5,
+  "failed_cases": 5,
+  "evaluations": [
+    {
+      "id": "savings-minimum-balance",
+      "question": "What is the minimum balance for a Regular Savings account?",
+      "expected_answer": "₹5,000 in metro/urban areas, ₹2,500 in semi-urban areas and ₹1,000 in rural areas.",
+      "expected_source": "Savings Account Policy",
+      "retrieved_sources": [
+        {
+          "citation": 1,
+          "source_id": "c7da6f9d164d",
+          "title": "Savings Account Policy",
+          "source": "01_savings_accounts.md",
+          "section": "Charges for non-maintenance of minimum balance",
+          "version": "4.2",
+          "effective_date": "2026-04-01",
+          "score": 0.7151,
+          "passage": "If the Monthly Average Balance falls below the required level in a quarter, a penalty of 5% of the shortfall is charged, subject to a minimum of ₹100 and a maximum of ₹600 per quarter, plus GST. No penalty is charged on Salary Plus, Instant Digital Savings or Basic Savings Bank Deposit accounts."
+        },
+        {
+          "citation": 2,
+          "source_id": "c7da6f9d164d",
+          "title": "Savings Account Policy",
+          "source": "01_savings_accounts.md",
+          "section": "Minimum balance requirements",
+          "version": "4.2",
+          "effective_date": "2026-04-01",
+          "score": 0.6838,
+          "passage": "The Monthly Average Balance (MAB) depends on the product and the branch location.\n| Product | Metro / Urban | Semi-urban | Rural |\n|---|---|---|---|\n| Regular Savings | ₹5,000 | ₹2,500 | ₹1,000 |\n| Salary Plus | Zero balance | Zero balance | Zero balance |\n| Senior Citizen Savings | ₹2,500 | ₹2,500 | ₹1,000 |\n| Junior Savings | ₹1,000 | ₹1,000 | ₹500 |\n| Instant Digital Savings | Zero balance | Zero balance | Zero balance |"
+        },
+        {
+          "citation": 3,
+          "source_id": "fba0c64ce8ad",
+          "title": "Fixed Deposit and Recurring Deposit Policy",
+          "source": "03_fixed_and_recurring_deposits.md",
+          "section": "Minimum deposit and tenure",
+          "version": "5.0",
+          "effective_date": "2026-04-01",
+          "score": 0.5648,
+          "passage": "The minimum fixed deposit amount is ₹10,000 and the tenure ranges from 7 days to 10 years. Deposits can be opened online through net banking and the app, or at any branch."
+        },
+        {
+          "citation": 4,
+          "source_id": "c7da6f9d164d",
+          "title": "Savings Account Policy",
+          "source": "01_savings_accounts.md",
+          "section": "Interest rates on savings accounts",
+          "version": "4.2",
+          "effective_date": "2026-04-01",
+          "score": 0.5627,
+          "passage": "Interest is calculated on the end-of-day balance and credited to the account every quarter, on the last day of March, June, September and December.\n| Daily balance slab | Interest rate (per annum) |\n|---|---|\n| Up to ₹1,00,000 | 2.75% |\n| Above ₹1,00,000 and up to ₹10,00,000 | 3.00% |\n| Above ₹10,00,000 | 3.50% |\nSenior Citizen Savings account holders earn an additional 0.25% per annum on every slab."
+        }
+      ],
+      "observed_output": "The minimum balance for a Regular Savings account varies by branch location:\n\n- **Metro / Urban branches:** ₹5,000 [2]  \n- **Semi‑urban branches:** ₹2,500 [2]  \n- **Rural branches:** ₹1,000 [2]",
+      "verification_warnings": [
+        "A response claim is missing a source citation."
+      ],
+      "judgment": {
+        "expected_terms_present": true,
+        "missing_terms": [],
+        "expected_source_retrieved": true,
+        "citation_and_number_checks_passed": false,
+        "pass": false
+      },
+      "error": null,
+      "required_terms": [
+        "5,000",
+        "2,500",
+        "1,000"
+      ]
+    },
+    {
+      "id": "senior-citizen-fd-rate",
+      "question": "What is the senior-citizen fixed-deposit rate for 1 year to less than 2 years?",
+      "expected_answer": "The senior-citizen rate for that tenor is 7.50% per annum.",
+      "expected_source": "Fixed Deposit and Recurring Deposit Policy",
+      "retrieved_sources": [
+        {
+          "citation": 1,
+          "source_id": "fba0c64ce8ad",
+          "title": "Fixed Deposit and Recurring Deposit Policy",
+          "source": "03_fixed_and_recurring_deposits.md",
+          "section": "Fixed deposit interest rates",
+          "version": "5.0",
+          "effective_date": "2026-04-01",
+          "score": 0.6459,
+          "passage": "Interest rates on domestic fixed deposits below ₹3 crore, effective from 1 April 2026:\n| Tenor | General public (p.a.) | Senior citizens (p.a.) |\n|---|---|---|\n| 7 to 45 days | 3.50% | 4.00% |\n| 46 to 90 days | 4.75% | 5.25% |\n| 91 to 180 days | 5.50% | 6.00% |\n| 181 to 364 days | 6.40% | 6.90% |\n| 1 year to less than 2 years | 7.00% | 7.50% |\n| 2 years to less than 3 years | 7.10% | 7.60% |\n| 3 years to less than 5 years | 7.00% | 7.50% |\n| 5 years to 10 years | 6.90% | 7.40% |\nSenior citizens (60 years and above) receive an additional 0.50% per annum over the general rate."
+        },
+        {
+          "citation": 2,
+          "source_id": "fba0c64ce8ad",
+          "title": "Fixed Deposit and Recurring Deposit Policy",
+          "source": "03_fixed_and_recurring_deposits.md",
+          "section": "Minimum deposit and tenure",
+          "version": "5.0",
+          "effective_date": "2026-04-01",
+          "score": 0.642,
+          "passage": "The minimum fixed deposit amount is ₹10,000 and the tenure ranges from 7 days to 10 years. Deposits can be opened online through net banking and the app, or at any branch."
+        },
+        {
+          "citation": 3,
+          "source_id": "c7da6f9d164d",
+          "title": "Savings Account Policy",
+          "source": "01_savings_accounts.md",
+          "section": "Senior Citizen Savings account",
+          "version": "4.2",
+          "effective_date": "2026-04-01",
+          "score": 0.6092,
+          "passage": "Customers aged 60 years and above can open a Senior Citizen Savings account. Benefits: higher savings interest (additional 0.25%), additional 0.50% on fixed deposits, free doorstep banking for cash pick-up and delivery up to 4 visits per month, and a free passbook update service."
+        },
+        {
+          "citation": 4,
+          "source_id": "fba0c64ce8ad",
+          "title": "Fixed Deposit and Recurring Deposit Policy",
+          "source": "03_fixed_and_recurring_deposits.md",
+          "section": "Tax Saver fixed deposit",
+          "version": "5.0",
+          "effective_date": "2026-04-01",
+          "score": 0.6049,
+          "passage": "The Tax Saver FD has a fixed tenor of 5 years with a lock-in period of 5 years. Deposits up to ₹1,50,000 in a financial year qualify for deduction under Section 80C of the Income Tax Act, as per prevailing tax law. The interest rate is 6.90% per annum for all customers. Premature withdrawal and loans against this deposit are not allowed."
+        }
+      ],
+      "observed_output": "The senior‑citizen fixed‑deposit rate for a tenure of 1 year to less than 2 years is **7.50 % per annum**.【1】\n\n- This rate applies to domestic fixed deposits up to ₹3 crore.【1】\n- Senior citizens receive an extra 0.50 % over the general public rate, which is reflected in the 7.50 % figure.【1】",
+      "verification_warnings": [
+        "₹3 is not verified by the cited policy passage(s).",
+        "0.50% is not verified by the cited policy passage(s).",
+        "7.50% is not verified by the cited policy passage(s)."
+      ],
+      "judgment": {
+        "expected_terms_present": true,
+        "missing_terms": [],
+        "expected_source_retrieved": true,
+        "citation_and_number_checks_passed": false,
+        "pass": false
+      },
+      "error": null,
+      "required_terms": [
+        "7.50%"
+      ]
+    },
+    {
+      "id": "personal-loan-age",
+      "question": "What is the age eligibility for a salaried personal loan?",
+      "expected_answer": "Applicants must be 21 to 60 years old at application and no older than 65 at maturity.",
+      "expected_source": "Personal Loan Policy",
+      "retrieved_sources": [
+        {
+          "citation": 1,
+          "source_id": "a9c4635a3440",
+          "title": "Personal Loan Policy (Aurora FlexiCash)",
+          "source": "04_personal_loans.md",
+          "section": "Eligibility criteria for self-employed applicants",
+          "version": "6.3",
+          "effective_date": "2026-04-01",
+          "score": 0.6819,
+          "passage": "Self-employed professionals and business owners must be between 25 and 65 years of age, have at least 3 years of business continuity, file Income Tax Returns for the last 2 years, and have a minimum annual income of ₹6,00,000 as per ITR. The CIBIL score requirement of 700 or above also applies."
+        },
+        {
+          "citation": 2,
+          "source_id": "a9c4635a3440",
+          "title": "Personal Loan Policy (Aurora FlexiCash)",
+          "source": "04_personal_loans.md",
+          "section": "Eligibility criteria for salaried applicants",
+          "version": "6.3",
+          "effective_date": "2026-04-01",
+          "score": 0.6578,
+          "passage": "- Age: 21 years to 60 years at the time of application, and not more than 65 years at loan maturity.\n- Minimum net monthly income: ₹25,000 for applicants living in metro cities and ₹20,000 for other locations.\n- Work experience: at least 1 year of total work experience, of which at least 6 months with the current employer.\n- Credit score: a CIBIL score of 700 or above is required. Applicants with a score below 700 are not eligible for an unsecured personal loan.\n- Total monthly EMI obligations including the proposed loan must not exceed 50% of net monthly income.\n- The applicant must be an Indian resident with a salary account or a salary slip from a company approved by the bank."
+        },
+        {
+          "citation": 3,
+          "source_id": "2dc8c9052eec",
+          "title": "Home Loan Policy (Aurora HomeFirst)",
+          "source": "05_home_loans.md",
+          "section": "Eligibility",
+          "version": "7.1",
+          "effective_date": "2026-04-01",
+          "score": 0.6565,
+          "passage": "- Age: 21 to 65 years at the time of application.\n- Minimum net monthly income: ₹30,000 for salaried applicants. Self-employed applicants must show a minimum annual income of ₹4,00,000 in the latest ITR.\n- Credit score: a CIBIL score of 700 or above is required.\n- Total EMI obligations must not exceed 55% of net monthly income.\n- Co-applicants such as a spouse or parents can be added to increase eligibility."
+        },
+        {
+          "citation": 4,
+          "source_id": "d90cf49b1c4c",
+          "title": "Education Loan and Vehicle Loan Policy",
+          "source": "06_education_and_vehicle_loans.md",
+          "section": "Car loan (Aurora DriveEasy)",
+          "version": "3.4",
+          "effective_date": "2026-04-01",
+          "score": 0.6157,
+          "passage": "| Feature | New car | Used car (up to 5 years old) |\n|---|---|---|\n| Maximum finance | 90% of on-road price | 80% of valuation |\n| Interest rate (p.a.) | 8.75% to 11.50% | 11.00% to 14.00% |\n| Maximum tenure | 7 years | 5 years |\nProcessing fee is 1% of the loan amount, with a maximum of ₹10,000, plus GST. Foreclosure charge is 3% of the outstanding principal if the loan is closed within 12 months, and nil after that. Minimum age of the applicant is 21 years and minimum net annual income is ₹3,00,000."
+        }
+      ],
+      "observed_output": "A salaried personal loan applicant must be between 21 and 60 years old when applying, and cannot be older than 65 years at loan maturity. [2]\n\n- Age at application: 21 – 60 years [2]  \n- Maximum age at loan maturity: ≤ 65 years [2]",
+      "verification_warnings": [],
+      "judgment": {
+        "expected_terms_present": true,
+        "missing_terms": [],
+        "expected_source_retrieved": true,
+        "citation_and_number_checks_passed": true,
+        "pass": true
+      },
+      "error": null,
+      "required_terms": [
+        "21",
+        "60",
+        "65"
+      ]
+    },
+    {
+      "id": "home-loan-processing-fee",
+      "question": "What is the processing fee for a home loan?",
+      "expected_answer": "0.50% of the loan amount, with a ₹5,000 minimum and ₹15,000 maximum, plus GST.",
+      "expected_source": "Home Loan Policy",
+      "retrieved_sources": [
+        {
+          "citation": 1,
+          "source_id": "2dc8c9052eec",
+          "title": "Home Loan Policy (Aurora HomeFirst)",
+          "source": "05_home_loans.md",
+          "section": "Fees and charges",
+          "version": "7.1",
+          "effective_date": "2026-04-01",
+          "score": 0.6948,
+          "passage": "- Processing fee: 0.50% of the loan amount, subject to a minimum of ₹5,000 and a maximum of ₹15,000, plus GST.\n- Legal and technical valuation fee: between ₹3,000 and ₹7,500 depending on the property, payable at the time of application and non-refundable.\n- Prepayment and foreclosure: no prepayment or foreclosure charges on floating-rate home loans taken by individual borrowers. The minimum part-prepayment amount is equal to one EMI.\n- Interest rate switch or conversion fee: 0.25% of the outstanding principal.\n- Late payment charge: 2% per month on the overdue EMI."
+        },
+        {
+          "citation": 2,
+          "source_id": "a9c4635a3440",
+          "title": "Personal Loan Policy (Aurora FlexiCash)",
+          "source": "04_personal_loans.md",
+          "section": "Fees and charges",
+          "version": "6.3",
+          "effective_date": "2026-04-01",
+          "score": 0.6364,
+          "passage": "- Processing fee: 1.50% of the loan amount for salaried applicants and 2.00% for self-employed applicants, plus GST. The minimum processing fee is ₹1,500.\n- Late EMI payment charge: 2% per month on the overdue amount, subject to a minimum of ₹500.\n- Cheque / ECS bounce charge: ₹500 per instance.\n- Loan statement and foreclosure letter: free once a year, ₹100 for each additional copy."
+        },
+        {
+          "citation": 3,
+          "source_id": "2dc8c9052eec",
+          "title": "Home Loan Policy (Aurora HomeFirst)",
+          "source": "05_home_loans.md",
+          "section": "Tax benefits",
+          "version": "7.1",
+          "effective_date": "2026-04-01",
+          "score": 0.5801,
+          "passage": "Interest paid on a home loan may qualify for a deduction of up to ₹2,00,000 per year on a self-occupied property under Section 24(b), and principal repayment up to ₹1,50,000 under Section 80C, as per prevailing income tax law and regime chosen. Customers should consult a tax advisor. The bank provides an interest certificate every year free of cost."
+        },
+        {
+          "citation": 4,
+          "source_id": "d90cf49b1c4c",
+          "title": "Education Loan and Vehicle Loan Policy",
+          "source": "06_education_and_vehicle_loans.md",
+          "section": "Education loan (Aurora Vidya) > Fees",
+          "version": "3.4",
+          "effective_date": "2026-04-01",
+          "score": 0.5671,
+          "passage": "Processing fee is nil for loans up to ₹7,50,000. For higher amounts it is 1% of the loan, with a maximum of ₹10,000, plus GST. No prepayment charges apply on education loans."
+        }
+      ],
+      "observed_output": "The processing fee for a home loan is 0.50 % of the loan amount, with a minimum of ₹5,000 and a maximum of ₹15,000, plus GST. [1]  \n\n- The fee is calculated on the total loan amount. [1]  \n- It cannot be lower than ₹5,000 or exceed ₹15,000, regardless of the loan size. [1]  \n- GST is applied on top of the calculated fee. [1]  ",
+      "verification_warnings": [],
+      "judgment": {
+        "expected_terms_present": true,
+        "missing_terms": [],
+        "expected_source_retrieved": true,
+        "citation_and_number_checks_passed": true,
+        "pass": true
+      },
+      "error": null,
+      "required_terms": [
+        "0.50%",
+        "5,000",
+        "15,000"
+      ]
+    },
+    {
+      "id": "credit-card-late-fee",
+      "question": "What is the late-payment fee when my credit-card amount due is ₹10,000?",
+      "expected_answer": "The late fee is ₹750 for a total amount due from ₹5,001 to ₹20,000.",
+      "expected_source": "Credit Card Policy",
+      "retrieved_sources": [
+        {
+          "citation": 1,
+          "source_id": "3f8d32f5f679",
+          "title": "Credit Card Policy",
+          "source": "07_credit_cards.md",
+          "section": "Late payment fee",
+          "version": "4.0",
+          "effective_date": "2026-04-01",
+          "score": 0.6389,
+          "passage": "| Total amount due | Late payment fee |\n|---|---|\n| Up to ₹500 | Nil |\n| ₹501 to ₹5,000 | ₹400 |\n| ₹5,001 to ₹20,000 | ₹750 |\n| Above ₹20,000 | ₹1,000 |"
+        },
+        {
+          "citation": 2,
+          "source_id": "3f8d32f5f679",
+          "title": "Credit Card Policy",
+          "source": "07_credit_cards.md",
+          "section": "Other charges",
+          "version": "4.0",
+          "effective_date": "2026-04-01",
+          "score": 0.6071,
+          "passage": "- Cash advance fee: 2.5% of the amount withdrawn, minimum ₹500. Interest at 3.6% per month applies from the date of withdrawal, with no interest-free period.\n- Over-limit fee: 2.5% of the over-limit amount, minimum ₹500.\n- Card replacement: ₹250.\n- EMI conversion: purchases of ₹5,000 or more can be converted into EMIs of 3 to 24 months at 14% per annum, with a processing fee of ₹199 plus GST."
+        },
+        {
+          "citation": 3,
+          "source_id": "3f8d32f5f679",
+          "title": "Credit Card Policy",
+          "source": "07_credit_cards.md",
+          "section": "Interest and payment terms",
+          "version": "4.0",
+          "effective_date": "2026-04-01",
+          "score": 0.5414,
+          "passage": "- Interest on unpaid balance: 3.6% per month (43.2% per annum).\n- Interest-free period: up to 50 days on purchases, if the full statement balance is paid by the due date.\n- Minimum amount due: 5% of the total outstanding or ₹200, whichever is higher. Paying only the minimum amount due attracts interest on the remaining balance.\n- Statement is generated monthly and the due date is 18 days after the statement date."
+        },
+        {
+          "citation": 4,
+          "source_id": "af170d2cd67c",
+          "title": "Schedule of Fees and Service Charges",
+          "source": "08_fees_and_charges.md",
+          "section": "Debit card, statements and alerts",
+          "version": "8.0",
+          "effective_date": "2026-04-01",
+          "score": 0.5407,
+          "passage": "- Classic debit card: annual fee ₹200, waived if at least 25 transactions are done in a year. Platinum debit card: ₹500 per year.\n- Debit card replacement: ₹300.\n- Duplicate statement or passbook printing: ₹100 per request. Electronic statements are free.\n- SMS alerts: ₹15 per quarter. Push notifications on the app are free."
+        }
+      ],
+      "observed_output": "The late‑payment fee for a credit‑card amount due of ₹10,000 is **₹750**.  \n\n- The fee schedule lists ₹5,001 to ₹20,000 as attracting a ₹750 charge【1】.  ",
+      "verification_warnings": [
+        "A response claim is missing a source citation.",
+        "₹750 is not verified by the cited policy passage(s)."
+      ],
+      "judgment": {
+        "expected_terms_present": true,
+        "missing_terms": [],
+        "expected_source_retrieved": true,
+        "citation_and_number_checks_passed": false,
+        "pass": false
+      },
+      "error": null,
+      "required_terms": [
+        "750",
+        "5,001",
+        "20,000"
+      ]
+    },
+    {
+      "id": "account-opening-documents",
+      "question": "Which documents are required to open a savings account?",
+      "expected_answer": "Identity/address proof, PAN or Form 60, a recent photograph, and an Aadhaar-linked mobile number.",
+      "expected_source": "KYC and Account Opening Policy",
+      "retrieved_sources": [
+        {
+          "citation": 1,
+          "source_id": "85464fdd12d9",
+          "title": "KYC and Account Opening Policy",
+          "source": "09_kyc_and_account_opening.md",
+          "section": "Documents required to open an account",
+          "version": "2.8",
+          "effective_date": "2026-04-01",
+          "score": 0.5956,
+          "passage": "Every customer must complete Know Your Customer (KYC) before an account is activated.\n- Proof of identity and address (any one Officially Valid Document): Aadhaar, passport, voter ID, driving licence or NREGA job card.\n- Permanent Account Number (PAN) card, or Form 60 if the customer has no PAN.\n- One recent passport-size photograph.\n- Mobile number linked to Aadhaar for OTP-based verification."
+        },
+        {
+          "citation": 2,
+          "source_id": "07699554fc04",
+          "title": "Current Account Policy",
+          "source": "02_current_accounts.md",
+          "section": "Documents required",
+          "version": "3.1",
+          "effective_date": "2026-04-01",
+          "score": 0.5763,
+          "passage": "Business registration proof (GST certificate, Udyam registration, partnership deed or certificate of incorporation), PAN of the business, identity and address proof of all signatories, and two recent passport-size photographs of each signatory."
+        },
+        {
+          "citation": 3,
+          "source_id": "c7da6f9d164d",
+          "title": "Savings Account Policy",
+          "source": "01_savings_accounts.md",
+          "section": "Junior Savings account",
+          "version": "4.2",
+          "effective_date": "2026-04-01",
+          "score": 0.5368,
+          "passage": "A Junior Savings account can be opened for a minor below 18 years. For children below 10 years, the account is operated by the natural or legal guardian. A minor aged 10 years and above may operate the account independently with a daily withdrawal limit of ₹5,000. On turning 18, the customer must submit fresh KYC documents and a new specimen signature to convert the account into a regular savings account."
+        },
+        {
+          "citation": 4,
+          "source_id": "c7da6f9d164d",
+          "title": "Savings Account Policy",
+          "source": "01_savings_accounts.md",
+          "section": "Overview of savings products",
+          "version": "4.2",
+          "effective_date": "2026-04-01",
+          "score": 0.5265,
+          "passage": "Aurora National Bank offers five savings products: Regular Savings, Salary Plus, Senior Citizen Savings, Junior Savings (for minors) and Instant Digital Savings. All savings accounts are eligible for a RuPay or Visa debit card, net banking, the Aurora Connect mobile app and UPI."
+        }
+      ],
+      "observed_output": "A savings account can be opened by providing the standard KYC documents listed in the bank’s account‑opening policy.  \n\n- Proof of identity and address (any one officially valid document such as Aadhaar, passport, voter ID, driving licence or NREGA job card) [1]  \n- Permanent Account Number (PAN) card, or Form 60 if the customer does not have a PAN [1]  \n- One recent passport‑size photograph [1]  \n- Mobile number linked to Aadhaar for OTP‑based verification [1]",
+      "verification_warnings": [
+        "A response claim is missing a source citation."
+      ],
+      "judgment": {
+        "expected_terms_present": true,
+        "missing_terms": [],
+        "expected_source_retrieved": true,
+        "citation_and_number_checks_passed": false,
+        "pass": false
+      },
+      "error": null,
+      "required_terms": [
+        "Aadhaar",
+        "PAN",
+        "photograph"
+      ]
+    },
+    {
+      "id": "other-bank-atm-limit",
+      "question": "How many free transactions do I get at other banks' ATMs?",
+      "expected_answer": "Five monthly transactions are free, or three in the listed metro cities.",
+      "expected_source": "Schedule of Fees",
+      "retrieved_sources": [
+        {
+          "citation": 1,
+          "source_id": "af170d2cd67c",
+          "title": "Schedule of Fees and Service Charges",
+          "source": "08_fees_and_charges.md",
+          "section": "ATM usage",
+          "version": "8.0",
+          "effective_date": "2026-04-01",
+          "score": 0.6083,
+          "passage": "Transactions at Aurora National Bank ATMs are unlimited and free. At other banks' ATMs, 5 transactions per month are free (3 per month in the metro cities of Delhi, Mumbai, Chennai, Kolkata, Bengaluru and Hyderabad). After the free limit, ₹23 is charged per financial transaction and ₹8.50 per non-financial transaction such as a balance enquiry. If an ATM transaction fails but the account is debited, the amount is reversed automatically within 5 working days; a compensation of ₹100 per day is paid for any delay beyond that."
+        },
+        {
+          "citation": 2,
+          "source_id": "af170d2cd67c",
+          "title": "Schedule of Fees and Service Charges",
+          "source": "08_fees_and_charges.md",
+          "section": "Branch cash transactions",
+          "version": "8.0",
+          "effective_date": "2026-04-01",
+          "score": 0.563,
+          "passage": "Four cash deposits per month up to a total of ₹2,00,000 are free on savings accounts. Beyond this, ₹5 per ₹1,000 is charged, with a minimum of ₹50."
+        },
+        {
+          "citation": 3,
+          "source_id": "07699554fc04",
+          "title": "Current Account Policy",
+          "source": "02_current_accounts.md",
+          "section": "Cash deposit and transaction limits",
+          "version": "3.1",
+          "effective_date": "2026-04-01",
+          "score": 0.5461,
+          "passage": "Cash deposits up to ₹10,00,000 per month are free. Cash deposits above this limit are charged at 0.15% of the amount deposited, subject to a minimum of ₹150 per transaction. The first 50 free cheque leaves per quarter are provided on Business Current Accounts, and 100 leaves on Premium Current Accounts."
+        },
+        {
+          "citation": 4,
+          "source_id": "c7da6f9d164d",
+          "title": "Savings Account Policy",
+          "source": "01_savings_accounts.md",
+          "section": "Debit card limits",
+          "version": "4.2",
+          "effective_date": "2026-04-01",
+          "score": 0.4168,
+          "passage": "| Card | ATM withdrawal per day | POS / online purchase per day |\n|---|---|---|\n| Classic debit card | ₹50,000 | ₹1,00,000 |\n| Platinum debit card | ₹1,00,000 | ₹2,00,000 |\nCustomers can raise or lower their card limits at any time using the Aurora Connect app or net banking."
+        }
+      ],
+      "observed_output": "You get **5 free transactions per month at other banks’ ATMs** (except in the listed metro cities, where the free limit is 3 per month)【1】.  \n\n- Free limit: 5 transactions each month【1】.  \n- In Delhi, Mumbai, Chennai, Kolkata, Bengaluru, and Hyderabad the free limit is reduced to 3 per month【1】.  ",
+      "verification_warnings": [],
+      "judgment": {
+        "expected_terms_present": true,
+        "missing_terms": [],
+        "expected_source_retrieved": true,
+        "citation_and_number_checks_passed": true,
+        "pass": true
+      },
+      "error": null,
+      "required_terms": [
+        "5",
+        "3",
+        "per month"
+      ]
+    },
+    {
+      "id": "unauthorized-transaction-reporting",
+      "question": "How do I report an unauthorized transaction?",
+      "expected_answer": "Report it through the app, net banking, or the 24x7 helpline 1800-120-4567.",
+      "expected_source": "Digital Banking",
+      "retrieved_sources": [
+        {
+          "citation": 1,
+          "source_id": "c7e457b89cd8",
+          "title": "Digital Banking, Security and Grievance Redressal Policy",
+          "source": "10_digital_banking_security_and_grievance.md",
+          "section": "Reporting fraud and customer liability",
+          "version": "3.6",
+          "effective_date": "2026-04-01",
+          "score": 0.4674,
+          "passage": "Customers must report an unauthorised transaction as soon as they notice it, through the app, net banking, or by calling the 24x7 helpline 1800-120-4567.\n| When reported | Customer liability |\n|---|---|\n| Within 3 working days of receiving the alert | Zero liability for third-party frauds |\n| Between 4 and 7 working days | Limited liability of ₹5,000 for savings accounts and up to ₹25,000 for current accounts and cards with higher limits |\n| After 7 working days | As per the bank board-approved policy |\nThe bank credits the disputed amount to the customer account within 10 working days of the report, after which the investigation continues."
+        }
+      ],
+      "observed_output": "You can report an unauthorized transaction through the app, net‑banking, or by calling the 24‑hour helpline 1800‑120‑4567. [1]\n\n- Report it as soon as you notice the transaction to qualify for zero liability for third‑party frauds. [1]  \n- If reported within 3 working days of the alert, you have no liability. [1]  \n- Reporting between 4 and 7 working days limits liability to ₹5,000 for savings accounts and up to ₹25,000 for current accounts and cards with higher limits. [1]  \n- After 7 working days, liability follows the bank’s board‑approved policy. [1]  \n- The bank will credit the disputed amount to your account within 10 working days of the report, while the investigation continues. [1]",
+      "verification_warnings": [],
+      "judgment": {
+        "expected_terms_present": true,
+        "missing_terms": [],
+        "expected_source_retrieved": true,
+        "citation_and_number_checks_passed": true,
+        "pass": true
+      },
+      "error": null,
+      "required_terms": [
+        "app",
+        "net banking",
+        "1800-120-4567"
+      ]
+    },
+    {
+      "id": "upi-daily-limit",
+      "question": "What is the regular daily UPI payment limit?",
+      "expected_answer": "₹1,00,000 and 20 transactions per customer per day.",
+      "expected_source": "Digital Banking",
+      "retrieved_sources": [
+        {
+          "citation": 1,
+          "source_id": "c7e457b89cd8",
+          "title": "Digital Banking, Security and Grievance Redressal Policy",
+          "source": "10_digital_banking_security_and_grievance.md",
+          "section": "UPI limits",
+          "version": "3.6",
+          "effective_date": "2026-04-01",
+          "score": 0.7151,
+          "passage": "- Maximum UPI payment limit: ₹1,00,000 per day per customer and 20 transactions per day.\n- For payments to verified merchants in categories such as tax payments, hospitals, education and IPO subscriptions, the limit is ₹5,00,000 per day.\n- Newly added payees above ₹25,000 are allowed only after a 24-hour cooling period."
+        },
+        {
+          "citation": 2,
+          "source_id": "07699554fc04",
+          "title": "Current Account Policy",
+          "source": "02_current_accounts.md",
+          "section": "Cash deposit and transaction limits",
+          "version": "3.1",
+          "effective_date": "2026-04-01",
+          "score": 0.4775,
+          "passage": "Cash deposits up to ₹10,00,000 per month are free. Cash deposits above this limit are charged at 0.15% of the amount deposited, subject to a minimum of ₹150 per transaction. The first 50 free cheque leaves per quarter are provided on Business Current Accounts, and 100 leaves on Premium Current Accounts."
+        },
+        {
+          "citation": 3,
+          "source_id": "c7da6f9d164d",
+          "title": "Savings Account Policy",
+          "source": "01_savings_accounts.md",
+          "section": "Debit card limits",
+          "version": "4.2",
+          "effective_date": "2026-04-01",
+          "score": 0.4733,
+          "passage": "| Card | ATM withdrawal per day | POS / online purchase per day |\n|---|---|---|\n| Classic debit card | ₹50,000 | ₹1,00,000 |\n| Platinum debit card | ₹1,00,000 | ₹2,00,000 |\nCustomers can raise or lower their card limits at any time using the Aurora Connect app or net banking."
+        },
+        {
+          "citation": 4,
+          "source_id": "fba0c64ce8ad",
+          "title": "Fixed Deposit and Recurring Deposit Policy",
+          "source": "03_fixed_and_recurring_deposits.md",
+          "section": "Minimum deposit and tenure",
+          "version": "5.0",
+          "effective_date": "2026-04-01",
+          "score": 0.4585,
+          "passage": "The minimum fixed deposit amount is ₹10,000 and the tenure ranges from 7 days to 10 years. Deposits can be opened online through net banking and the app, or at any branch."
+        }
+      ],
+      "observed_output": "The regular daily UPI payment limit is ₹1,00,000 per customer [1].\n\n- This limit applies to all UPI transactions in a day [1].  \n- You can make up to 20 UPI transactions per day within this amount [1].  ",
+      "verification_warnings": [
+        "₹1,00,000 is not verified by the cited policy passage(s)."
+      ],
+      "judgment": {
+        "expected_terms_present": true,
+        "missing_terms": [],
+        "expected_source_retrieved": true,
+        "citation_and_number_checks_passed": false,
+        "pass": false
+      },
+      "error": null,
+      "required_terms": [
+        "1,00,000",
+        "20 UPI transactions"
+      ]
+    },
+    {
+      "id": "home-loan-tenure",
+      "question": "What is the maximum home-loan tenure for salaried and self-employed applicants?",
+      "expected_answer": "30 years for salaried applicants and 25 years for self-employed applicants.",
+      "expected_source": "Home Loan Policy",
+      "retrieved_sources": [
+        {
+          "citation": 1,
+          "source_id": "2dc8c9052eec",
+          "title": "Home Loan Policy (Aurora HomeFirst)",
+          "source": "05_home_loans.md",
+          "section": "Eligibility",
+          "version": "7.1",
+          "effective_date": "2026-04-01",
+          "score": 0.6722,
+          "passage": "- Age: 21 to 65 years at the time of application.\n- Minimum net monthly income: ₹30,000 for salaried applicants. Self-employed applicants must show a minimum annual income of ₹4,00,000 in the latest ITR.\n- Credit score: a CIBIL score of 700 or above is required.\n- Total EMI obligations must not exceed 55% of net monthly income.\n- Co-applicants such as a spouse or parents can be added to increase eligibility."
+        },
+        {
+          "citation": 2,
+          "source_id": "2dc8c9052eec",
+          "title": "Home Loan Policy (Aurora HomeFirst)",
+          "source": "05_home_loans.md",
+          "section": "Loan amount and tenure",
+          "version": "7.1",
+          "effective_date": "2026-04-01",
+          "score": 0.667,
+          "passage": "Home loans are available from ₹5,00,000 up to ₹10,00,000,000 (₹10 crore) for purchase of a ready or under-construction house or flat, purchase of a plot and construction, home extension or renovation, and balance transfer of an existing home loan. The maximum tenure is 30 years for salaried applicants and 25 years for self-employed applicants. The age of the applicant at loan maturity must not exceed 70 years."
+        },
+        {
+          "citation": 3,
+          "source_id": "a9c4635a3440",
+          "title": "Personal Loan Policy (Aurora FlexiCash)",
+          "source": "04_personal_loans.md",
+          "section": "Eligibility criteria for self-employed applicants",
+          "version": "6.3",
+          "effective_date": "2026-04-01",
+          "score": 0.6538,
+          "passage": "Self-employed professionals and business owners must be between 25 and 65 years of age, have at least 3 years of business continuity, file Income Tax Returns for the last 2 years, and have a minimum annual income of ₹6,00,000 as per ITR. The CIBIL score requirement of 700 or above also applies."
+        },
+        {
+          "citation": 4,
+          "source_id": "a9c4635a3440",
+          "title": "Personal Loan Policy (Aurora FlexiCash)",
+          "source": "04_personal_loans.md",
+          "section": "Eligibility criteria for salaried applicants",
+          "version": "6.3",
+          "effective_date": "2026-04-01",
+          "score": 0.5834,
+          "passage": "- Age: 21 years to 60 years at the time of application, and not more than 65 years at loan maturity.\n- Minimum net monthly income: ₹25,000 for applicants living in metro cities and ₹20,000 for other locations.\n- Work experience: at least 1 year of total work experience, of which at least 6 months with the current employer.\n- Credit score: a CIBIL score of 700 or above is required. Applicants with a score below 700 are not eligible for an unsecured personal loan.\n- Total monthly EMI obligations including the proposed loan must not exceed 50% of net monthly income.\n- The applicant must be an Indian resident with a salary account or a salary slip from a company approved by the bank."
+        }
+      ],
+      "observed_output": "The longest home‑loan term is **30 years for salaried applicants** and **25 years for self‑employed applicants**.【2】\n\n- Salaried borrowers can take a tenure up to 30 years【2】.  \n- Self‑employed borrowers can take a tenure up to 25 years【2】.  ",
+      "verification_warnings": [],
+      "judgment": {
+        "expected_terms_present": true,
+        "missing_terms": [],
+        "expected_source_retrieved": true,
+        "citation_and_number_checks_passed": true,
+        "pass": true
+      },
+      "error": null,
+      "required_terms": [
+        "30 years",
+        "25 years"
+      ]
+    }
+  ],
+  "judged_at": "2026-11-01T17:03:27.770389+00:00",
+  "judgment_version": "citation-scope-v3"
+}

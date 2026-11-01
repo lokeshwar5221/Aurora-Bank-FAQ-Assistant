@@ -16,7 +16,7 @@ import streamlit as st
 from rag.config import (ASSISTANT_NAME, BANK_NAME, DEFAULT_TOP_K, POLICY_DIR,
                         SUPPORTED_EXTENSIONS, UPLOAD_DIR, get_llm_settings)
 from rag.generator import (NOT_FOUND_MESSAGE, LLMClient, LLMError, extractive_answer,
-                           smalltalk_reply, stream_answer, unverified_numbers)
+                           smalltalk_reply, stream_answer, verification_warnings)
 from rag.pipeline import KnowledgeBase
 from rag.retriever import Hit, contextualize_query
  
@@ -105,7 +105,8 @@ def esc(text: str) -> str:
 def hit_to_dict(h: Hit) -> dict:
     c = h.chunk
     return {"rank": h.rank, "title": c.doc_title, "section": c.section, "page": c.page,
-            "label": c.label, "text": c.text, "score": round(h.score, 3)}
+            "label": c.label, "text": c.text, "score": round(h.score, 3),
+            "doc_id": c.doc_id, "version": c.version, "effective_date": c.effective_date}
  
  
 def slips_html(items: list[dict], weak: bool = False) -> str:
@@ -132,7 +133,15 @@ def render_sources(items: list[dict], label: str, expander_label: str, weak: boo
     with st.expander(expander_label):
         for it in items:
             page = f" (page {it['page']})" if it.get("page") else ""
-            st.markdown(f"**[{it['rank']}] {it['title']}** - {it['section']}{page}")
+            revision = ""
+            if it.get("version") or it.get("effective_date"):
+                details = [f"version {it['version']}" if it.get("version") else "",
+                           f"effective {it['effective_date']}" if it.get("effective_date") else ""]
+                revision = f" ({', '.join(part for part in details if part)})"
+            source_id = f" (source ID `{it['doc_id']}`)" if it.get("doc_id") else ""
+            st.markdown(
+                f"**[{it['rank']}] {it['title']}**{source_id} - {it['section']}{page}{revision}"
+            )
             st.markdown(it["text"])
             st.divider()
  
@@ -171,12 +180,11 @@ def render_body(m: dict, include_text: bool = True) -> None:
         st.markdown(m["content"])
     n = len(m["sources"])
     best = int(round(m["sources"][0]["score"] * 100))
-    st.markdown(f'<div class="stamps"><span class="badge ok">✓ Grounded in {n} policy passage{"s" if n != 1 else ""}</span>'
+    st.markdown(f'<div class="stamps"><span class="badge ok">Retrieved policy sources: {n}</span>'
                 f'<span class="badge info">Best match {best}%</span></div>', unsafe_allow_html=True)
     if m.get("warnings"):
-        figs = ", ".join(m["warnings"])
-        st.markdown(f'<div class="notice warn"><b>Please double-check:</b> the figure(s) {esc(figs)} could not be '
-                    f'matched to the retrieved policy text. Compare with the sources below.</div>',
+        warnings = "<br>".join(esc(warning) for warning in m["warnings"])
+        st.markdown(f'<div class="notice warn"><b>Please double-check:</b><br>{warnings}</div>',
                     unsafe_allow_html=True)
     render_sources(m["sources"], "Sources used in this answer", "Read the exact policy text")
  
@@ -243,7 +251,7 @@ def answer_question(question: str, history: list[dict]) -> dict:
  
     placeholder.markdown(text)
     msg = {"role": "assistant", "status": "answered", "content": text, "sources": sources,
-           "warnings": unverified_numbers(text, result.hits)}   # Layer 4: number check
+           "warnings": verification_warnings(text, result.hits, question)}
     render_body(msg, include_text=False)
     return msg
  
@@ -263,15 +271,24 @@ def handle_question(question: str) -> None:
 # ============================================================
 def render_hero() -> None:
     s = kb.stats()
+    example = next((chunk for chunk in kb.chunks if "minimum balance" in chunk.section.casefold()),
+                   kb.chunks[0] if kb.chunks else None)
+    sample_card = ""
+    if example:
+        excerpt = example.text[:280].rstrip()
+        if len(example.text) > len(excerpt):
+            excerpt += "..."
+        sample_card = (
+            '<div class="sample"><div class="sample-tag">Retrieved policy excerpt</div>'
+            f'<div class="sample-q">{esc(example.doc_title)} — {esc(example.section)}</div>'
+            f'<div class="sample-a">{esc(excerpt)}</div>'
+            f'<div class="sample-src">{esc(example.label)}</div></div>'
+        )
     st.markdown(
         '<div class="hero"><div class="hero-text"><h1>Straight answers from the bank&#39;s own policy documents.</h1>'
         f'<p>Ask about accounts, interest rates, loan eligibility, cards and fees. {esc(ASSISTANT_NAME)} answers only '
         'from the documents, and tells you plainly when something isn&#39;t covered.</p></div>'
-        '<div class="sample"><div class="sample-tag">✓ Example of an answer</div>'
-        '<div class="sample-q">What is the minimum balance for a Regular Savings account?</div>'
-        '<div class="sample-a">It depends on your branch location: ₹5,000 in metro and urban areas, ₹2,500 in semi-urban '
-        'areas and ₹1,000 in rural areas [1].</div>'
-        '<div class="sample-src"><b>1</b>Savings Account Policy, Minimum balance requirements</div></div></div>'
+        f'{sample_card}</div>'
         '<div class="flow">'
         '<div class="flow-step"><b>1</b><div><h5>Ask in your own words</h5><p>No forms and no banking jargon needed.</p></div></div>'
         f'<div class="flow-step"><b>2</b><div><h5>{esc(ASSISTANT_NAME)} searches {s["documents"]} documents</h5>'
@@ -327,14 +344,29 @@ def page_knowledge_base() -> None:
                    f"Details: {s['fallback_reason']}")
  
     per_doc = kb.chunks_per_document()
-    rows = [{"Document": d.title, "File": d.source, "Type": d.kind.upper(), "Passages": per_doc.get(d.doc_id, 0)}
+    rows = [{"Document": d.title, "File": d.source, "Source ID": d.doc_id,
+             "Type": d.kind.upper(), "Passages": per_doc.get(d.doc_id, 0)}
             for d in kb.documents]
+    for row, document in zip(rows, kb.documents):
+        row["Version"] = document.version or "—"
+        row["Effective date"] = document.effective_date or "—"
     st.dataframe(rows, use_container_width=True, hide_index=True)
+    if kb.ingestion_errors:
+        st.warning("Some files could not be indexed: " + "; ".join(kb.ingestion_errors))
+    if kb.policy_conflicts:
+        st.warning(
+            "Some policy families were excluded from search because their active version is ambiguous. "
+            "Add a unique `effective_date` or an explicit `supersedes` value in the document metadata: "
+            + "; ".join(kb.policy_conflicts)
+        )
  
     st.markdown("### Browse the indexed passages")
     if kb.documents:
         choice = st.selectbox("Document", [d.doc_id for d in kb.documents], label_visibility="collapsed",
-                              format_func=lambda i: next(d.title for d in kb.documents if d.doc_id == i))
+                              format_func=lambda i: next(
+                                  f"{d.title} — {d.source} ({d.doc_id})"
+                                  for d in kb.documents if d.doc_id == i
+                              ))
         for c in [c for c in kb.chunks if c.doc_id == choice]:
             with st.expander(c.section + (f"  (page {c.page})" if c.page else "")):
                 st.markdown(c.text)

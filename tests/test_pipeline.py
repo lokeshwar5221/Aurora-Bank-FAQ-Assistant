@@ -98,8 +98,8 @@ def test_prompt_contains_rules_context_and_question():
 
 def test_number_check_flags_invented_figures():
     res = kb().retriever.retrieve("home loan processing fee", top_k=3)
-    ok = "The processing fee is 0.50% of the loan amount, with a maximum of ₹15,000 [1]."
-    bad = "The processing fee is 3.75% of the loan amount, with a maximum of ₹99,000 [1]."
+    ok = "The processing fee is 0.50% of the loan amount, with a maximum of ₹15,000 [2]."
+    bad = "The processing fee is 3.75% of the loan amount, with a maximum of ₹99,000 [2]."
     assert unverified_numbers(ok, res.hits) == []
     assert set(unverified_numbers(bad, res.hits)) == {"3.75", "99,000"}
 
