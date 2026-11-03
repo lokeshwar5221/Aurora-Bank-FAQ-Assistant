@@ -1,173 +1,364 @@
-# 🏦 Personal Finance and Banking FAQ Assistant (RAG)
+# 🏦 Aurora Bank – AI-Powered Banking FAQ Assistant
 
-A Retrieval-Augmented Generation (RAG) chatbot that answers customer questions about account types, interest rates, loan eligibility, cards and fees **strictly from a bank's policy documents**, and clearly says when a question **cannot** be answered from them.
+<p align="center">
+  <b>An Intelligent Banking Assistant Powered by Retrieval-Augmented Generation (RAG)</b>
+</p>
 
-Built with **Python, Streamlit, Groq (OpenAI-compatible API), sentence embeddings and a vector index**. It uses the same stack and configuration style (`.env` / `st.secrets`, Groq client, retries, prompt templates) as the reference `GENAI_PROJECT` app.
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.10+-blue?logo=python" />
+  <img src="https://img.shields.io/badge/Framework-Streamlit-red?logo=streamlit" />
+  <img src="https://img.shields.io/badge/AI-Groq%20LLM-orange" />
+  <img src="https://img.shields.io/badge/Architecture-RAG-purple" />
+  <img src="https://img.shields.io/badge/Status-Active-success" />
+</p>
 
-> **Note:** Aurora National Bank is a **fictional bank** and the 10 policy documents in `data/policies/` are sample data written for this academic project.
+## 📌 Project Overview
 
----
+Aurora Bank FAQ Assistant is an AI-powered conversational chatbot designed to answer banking-related questions using Retrieval-Augmented Generation (RAG).
 
-## Features mapped to the assignment
+The application helps users understand banking services, including savings accounts, fixed deposits, personal loans, home loans, credit cards, interest rates, banking charges, and transaction-related policies.
 
-| Required module | File | What it does |
-|---|---|---|
-| Policy Document Ingestion | `rag/ingest.py` | Loads `.md`, `.txt`, `.pdf`; splits on headings into topic-focused passages that remember document, section and page |
-| Embedding and Indexing | `rag/embedder.py`, `rag/vectorstore.py` | MiniLM sentence embeddings (TF-IDF fallback); cosine-similarity vector index saved on disk and rebuilt only when documents change |
-| Retriever | `rag/retriever.py` | Top-k similarity search with a relevance threshold; follow-ups retain the resolved topic unless a new topic is introduced |
-| Answer Generator | `rag/generator.py` | Prompt templates, Groq LLM streaming and refusal handling |
-| Answer Verification | `rag/verification.py` | Citation and numeric-claim checks, kept separate from generation |
-| Chat Interface | `app.py`, `assets/style.css` | Streamlit chat with topic tabs of ready-made questions, streaming answers, numbered source slips, knowledge-base browser, document upload |
+Unlike traditional chatbots, Aurora Bank uses a document-grounded approach. It retrieves relevant information from banking policy documents and generates answers based only on the retrieved content.
 
-| Course concept | Where |
+The assistant also provides source citations and refuses to answer questions when the required information is unavailable in its knowledge base, helping reduce AI hallucinations.
+
+**Note:** Aurora National Bank is a fictional bank, and its policy documents are sample data created for academic and demonstration purposes.
+
+## 🎯 Project Objectives
+
+- Develop an intelligent banking FAQ chatbot.
+- Implement Retrieval-Augmented Generation architecture.
+- Provide accurate answers from banking policy documents.
+- Reduce AI hallucinations through grounded responses.
+- Display supporting document references for answers.
+- Support multiple policy documents in a knowledge base.
+- Enable document uploads for knowledge-base expansion.
+- Maintain conversational context for follow-up questions.
+
+## ✨ Key Features
+
+### 1. 🤖 AI-Powered Banking Chatbot
+- Interactive conversational interface.
+- Natural-language question answering.
+- Streaming AI-generated responses.
+- Powered by Groq API.
+- Handles banking-related customer queries.
+
+### 2. 📚 Document-Based Knowledge Retrieval
+- Supports PDF, TXT, and Markdown documents.
+- Automatically extracts and processes policy content.
+- Splits documents into topic-focused passages.
+- Preserves document, section, and page information.
+- Rebuilds the knowledge index when documents change.
+
+### 3. 🧠 Retrieval-Augmented Generation (RAG)
+- Generates sentence embeddings using MiniLM.
+- Supports TF-IDF fallback when semantic embeddings are unavailable.
+- Performs cosine-similarity-based retrieval.
+- Retrieves the most relevant policy passages.
+- Uses retrieved information as context for AI responses.
+
+### 4. 🛡️ Hallucination Prevention
+The application uses four layers of answer verification:
+
+- **Similarity Threshold:** Rejects unrelated questions before calling the AI model.
+- **Grounded Prompting:** Restricts generated answers to retrieved policy information.
+- **Refusal Handling:** Clearly declines questions that are not covered by available documents.
+- **Citation Verification:** Checks source references and supported numerical claims.
+
+### 5. 🔍 Source Citations
+- Displays numbered source references.
+- Shows supporting policy passages.
+- Helps users understand where an answer originated.
+- Checks for invalid or missing citations.
+
+### 6. 📂 Knowledge Base Management
+- Browse available banking policy documents.
+- Upload additional PDF, TXT, and Markdown files.
+- Automatically process newly uploaded documents.
+- Maintain a persistent vector index.
+- Manage policy versions using effective dates and supersession information.
+
+### 7. 💬 Conversation Management
+- Interactive chat experience.
+- Ready-made questions organized by banking topics.
+- Follow-up question support.
+- Maintains context across related questions.
+- Resolves follow-up references to previously discussed topics.
+
+### 8. 🧪 Testing & Evaluation
+- Offline pipeline testing.
+- Retrieval and similarity testing.
+- Answer verification testing.
+- Streaming response testing.
+- Live LLM evaluation with recorded results.
+
+## 🛠️ Technology Stack
+
+| Category | Technologies |
 |---|---|
-| Vector databases and similarity search | `VectorStore.search()` (cosine similarity), `Retriever` |
-| Knowledge base from multiple documents | 10 policy documents, `KnowledgeBase` in `rag/pipeline.py`, upload in the UI |
-| Prompt templates for consistent tone | `SYSTEM_PROMPT` and `USER_TEMPLATE` in `rag/generator.py` |
-| Hallucination mitigation by grounding | Four layers, below |
+| Programming Language | Python |
+| Frontend / UI | Streamlit |
+| AI Model Provider | Groq API |
+| Architecture | Retrieval-Augmented Generation (RAG) |
+| Embeddings | FastEmbed / MiniLM |
+| Fallback Retrieval | TF-IDF |
+| Similarity Search | Cosine Similarity |
+| Document Processing | PDF, TXT, Markdown |
+| NLP | Sentence Embeddings |
+| Environment Management | Python dotenv / Streamlit Secrets |
+| Testing | Pytest |
+| Version Control | Git & GitHub |
+| Deployment | Streamlit Community Cloud |
 
-### Four layers against hallucination
-1. **Similarity gate**: if the best passage scores below the threshold, the LLM is never called and the app answers "not covered in the policy documents".
-2. **Grounded prompt**: the model may use only the numbered passages; guessing, estimating and outside knowledge are forbidden; every fact must cite `[n]`.
-3. **Refusal token**: if the passages lack the answer, the model must output `[[NOT_IN_POLICY]]`, which the app converts into a clear "cannot answer" message.
-4. **Citation-scoped checks**: numeric claims are checked against the passage(s) they cite, including product, conditions, table headers, and units. Formatting such as Markdown, non-breaking spaces, and equivalent currency magnitudes is normalized. Missing citations, invalid citations, and unsupported numbers are reported separately. These checks are warnings, not proof that all factual claims are correct.
+## 🏗️ System Architecture
 
-### Policy versions
+The project follows a Retrieval-Augmented Generation workflow.
 
-Markdown policies may start with this optional metadata block:
+```mermaid
+flowchart TD
+    A[User Question] --> B[Streamlit Chat Interface]
+    B --> C[Query Processing]
+    C --> D[Semantic Retrieval]
+    D --> E[Vector Store]
+    E --> F{Relevant Content Found?}
+    F -->|No| G[Policy-Based Refusal]
+    F -->|Yes| H[Retrieve Policy Passages]
+    H --> I[Groq LLM]
+    I --> J[Answer Verification]
+    J --> K[Source Citations]
+    K --> L[Final Response]
+    G --> L
+```
+
+## 📂 Project Structure
 
 ```text
----
-policy_id: home-loans
-version: 2.1
-effective_date: 2026-03-01
-supersedes: 2.0, previous-policy.md
----
-```
-
-Documents are grouped by `policy_id` (or title when no ID is supplied). Selection uses the current date as its explicit as-of date and excludes future-effective revisions before resolving supersession. An explicit `supersedes` entry may identify an older document by version, filename or document ID. Otherwise the unique latest eligible ISO `effective_date` is used. If a group has no unique active version, the whole group is excluded from retrieval and reported on the knowledge-base page rather than asking the model to choose. Version and effective-date metadata stay attached to retrieved passages and citations.
-
----
-
-## Project structure
-
-```
-aurora-bank-faq-assistant/
-├── app.py                  # Streamlit chat interface (run this)
-├── assets/style.css        # UI styling
+Aurora-Bank-FAQ-Assistant/
+│
+├── .streamlit/
+│   └── config.toml
+│
+├── assets/
+│   └── style.css
+│
+├── data/
+│   ├── policies/
+│   └── uploads/
+│
 ├── rag/
-│   ├── config.py           # settings, .env / st.secrets loading
-│   ├── ingest.py           # document loading + chunking
-│   ├── embedder.py         # embeddings (MiniLM, TF-IDF fallback)
-│   ├── vectorstore.py      # vector index + similarity search + persistence
-│   ├── retriever.py        # top-k retrieval + threshold gate
-│   ├── generator.py        # prompts, LLM client and streaming
-│   ├── verification.py     # citation and numeric-claim checks
-│   └── pipeline.py         # KnowledgeBase: ingest -> embed -> index
-├── data/policies/          # 10 bank policy documents (the knowledge base)
-├── data/uploads/           # documents added from the UI
+│   ├── config.py
+│   ├── ingest.py
+│   ├── embedder.py
+│   ├── vectorstore.py
+│   ├── retriever.py
+│   ├── generator.py
+│   ├── verification.py
+│   └── pipeline.py
+│
 ├── scripts/
-│   ├── ask.py              # command-line demo
-│   └── evaluate_live.py    # opt-in live evaluation runner
-├── tests/                  # offline ingestion, retrieval, streaming and verification tests
-│   └── evaluations/        # recorded live semantic-embedder/LLM evaluation
+│   ├── ask.py
+│   └── evaluate_live.py
+│
+├── tests/
+│   └── evaluations/
+│
+├── app.py
 ├── requirements.txt
 ├── .env.example
-└── .streamlit/             # theme + secrets example
+├── .gitignore
+└── README.md
 ```
 
----
+## ⚙️ Installation & Setup
 
-## Setup (about 5 minutes)
+### Prerequisites
 
-1. **Install Python 3.10+**, then open a terminal in this folder.
-2. **Create a virtual environment and install packages**
-   ```bash
-   python -m venv .venv
-   .venv\Scripts\activate          # Windows
-   # source .venv/bin/activate     # macOS / Linux
-   pip install -r requirements.txt
-   ```
-3. **Add your Groq API key** (free at https://console.groq.com/keys): copy `.env.example` to `.env` and paste the key.
-   ```
-   GROQ_API_KEY=gsk_your_key_here
-   ```
-4. **Run**
-   ```bash
-   streamlit run app.py
-   ```
-   The first start downloads the small embedding model (~90 MB) and builds the index; later starts are quick.
+- Python 3.10 or above
+- Visual Studio Code
+- Git
+- Groq API Key
 
-**No API key?** The app still works in *excerpt mode*: it retrieves and shows the exact policy passages without AI-written answers.
+### Step 1: Clone the Repository
 
-### Deploy free on Streamlit Community Cloud
-Push this folder to GitHub, create an app pointing at `app.py`, and in **Advanced settings > Secrets** paste:
+```bash
+git clone https://github.com/lokeshwar5221/Aurora-Bank-FAQ-Assistant.git
+```
+
+### Step 2: Navigate to the Project
+
+```bash
+cd Aurora-Bank-FAQ-Assistant
+```
+
+### Step 3: Create a Virtual Environment
+
+```bash
+python -m venv .venv
+```
+
+Activate the environment.
+
+**Windows:**
+
+```bash
+.venv\Scripts\activate
+```
+
+**Mac/Linux:**
+
+```bash
+source .venv/bin/activate
+```
+
+### Step 4: Install Dependencies
+
+```bash
+python -m pip install -r requirements.txt
+```
+
+### Step 5: Configure Groq API Key
+
+1. Visit https://console.groq.com/keys
+2. Sign in to your Groq account.
+3. Generate an API key.
+4. Create a `.env` file in the project root.
+5. Add your API key:
+
+```env
+GROQ_API_KEY=your_groq_api_key
+```
+
+Never upload your API key or `.env` file to GitHub.
+
+### Step 6: Run the Application
+
+```bash
+streamlit run app.py
+```
+
+Open the application in your browser:
+
+```text
+http://localhost:8501
+```
+
+## ☁️ Deployment
+
+The application can be deployed using **Streamlit Community Cloud**.
+
+1. Push your project to GitHub.
+2. Visit https://share.streamlit.io/
+3. Sign in using GitHub.
+4. Select your Aurora Bank FAQ Assistant repository.
+5. Select `app.py` as the main application file.
+6. Open Advanced Settings → Secrets.
+7. Add your Groq API key:
+
 ```toml
-GROQ_API_KEY = "gsk_your_key_here"
+GROQ_API_KEY = "your_groq_api_key"
 ```
 
----
+8. Deploy the application.
 
-## Try these questions
+## 💡 Sample Questions
 
-**Should be answered (with sources):**
+Try asking the chatbot:
+
+**Savings Accounts**
 - What is the minimum balance for a regular savings account?
+- What are the benefits of a savings account?
+
+**Fixed Deposits**
 - What are the FD interest rates for senior citizens?
+- What is the minimum deposit period?
+
+**Loans**
 - What are the eligibility criteria for a personal loan?
 - What is the home loan processing fee?
-- How do I report a fraudulent transaction?
+
+**Credit Cards**
 - What is the late payment fee on credit cards?
-- *Follow-up:* "and for women borrowers?" after a home loan question
+- What are the applicable credit card charges?
 
-**Should be declined (not in the documents):**
-- Who won the cricket world cup?
-- Can I buy bitcoin through the bank?
-- What is the interest rate at another bank?
+**Banking Security**
+- How do I report a fraudulent transaction?
 
----
+**Out-of-Scope Questions**
+- Who won the Cricket World Cup?
+- Can I buy Bitcoin through the bank?
 
-## Tuning and testing
+The chatbot should decline questions that are not covered by the banking policy documents.
 
-- **Relevance threshold** (sidebar > Search settings): raise it if the bot answers unrelated questions, lower it if it refuses valid ones. Defaults: `0.30` for MiniLM, `0.12` for TF-IDF.
-- **Run the offline tests** (no API key or internet needed):
-  ```bash
-  python tests/test_pipeline.py
-  # or: python -m pytest -q
-  ```
-- **Command-line demo:** `python scripts/ask.py "What is the NEFT charge?"` shows every retrieved passage with its similarity score. This is useful to explain retrieval in a viva.
-- **Add your own documents:** drop `.md`, `.txt` or `.pdf` files into `data/policies/` (or upload in the *Knowledge base* page). The index rebuilds automatically.
+## 🧪 Running Tests
 
+<<<<<<< HEAD
 The offline suite uses TF-IDF and simulated LLM streams. It also covers unsupported banking questions, personal-balance refusals, ambiguous policy conflicts, multi-turn follow-ups, and interrupted API streams. The historical 10-case evaluation in `tests/evaluations/live_results.json` contains 5 automated passes and 5 failures; it predates the current evaluation cases and must not be treated as evidence for the current code.
 
 The current submission's [live demonstration](tests/evaluations/live_demo_v6.md) includes a sourced answer, unsupported-question refusal, multi-turn follow-up, effective-dated policy update, policy conflict, and interrupted-stream scenario. Its [evaluation report](tests/evaluations/live_results_v6.json) records 13/13 passing live cases against commit `b700480716b0546c25d1055e37b351f584feae97`, a clean working tree, the case-set digest, retrieved passages, actual model outputs, judgments, and offline demonstration results.
 
 Automated evaluations check expected terms, retrieved sources, citations, and numeric claims. Citation and numeric checks are safeguards; they do not prove every sentence is factually correct or replace human review of answers against their source passages. Each current-format live report stores the case-set version and digest, code commit, working-tree state and diff digest (when dirty), as-of date, retrieved passages, actual output, and categorized verifier issues. It also records offline demonstrations for policy updates, ambiguous revisions, and simulated interrupted API responses. Existing reports are not overwritten. To collect a new run, choose an unused output path:
+=======
+Run the offline test suite:
+
+```bash
+python -m pytest -q
+```
+
+You can also run:
+
+```bash
+python tests/test_pipeline.py
+```
+
+To execute the live Groq evaluation:
+>>>>>>> f15b2dd9399c467dde8707bf163e2475f320319d
 
 ```bash
 python scripts/evaluate_live.py --confirm-live --output tests/evaluations/live_results_v7.json
 ```
 
-This sends questions and retrieved passages from the bundled fictional policies to Groq and may consume API quota. The report records expected answers, retrieved passages, actual model output and pass/fail judgments. To recompute judgments from saved output without API calls:
+This requires a configured API key and may consume API quota.
 
+<<<<<<< HEAD
 ```bash
 python scripts/evaluate_live.py --rejudge tests/evaluations/live_results_v7.json
 ```
+=======
+## 🔮 Future Enhancements
+>>>>>>> f15b2dd9399c467dde8707bf163e2475f320319d
 
-The local test environment reported Python 3.13.13, pytest 8.4.2, Streamlit 1.49.1, NumPy 2.5.4, scikit-learn 1.9.1, FastEmbed 0.9.1, pypdf 6.21.4 and OpenAI SDK 3.41.0. These are recorded environment versions, not a fully locked dependency set.
+- Multilingual banking assistance (English, Telugu, Hindi).
+- EMI and loan eligibility calculator.
+- Voice-based banking assistant.
+- Advanced hybrid search using keyword and semantic retrieval.
+- Improved document re-ranking.
+- Chat feedback and response ratings.
+- Additional banking services and policy integrations.
+- Enhanced analytics dashboard.
+
+## 🎓 Project Information
+
+**Project Name:** Aurora Bank – AI-Powered Banking FAQ Assistant
+
+**Project Domain:** Artificial Intelligence | Generative AI | Natural Language Processing
+
+**Project Type:** Python Full Stack / Generative AI Project
+
+**Core Concept:** Retrieval-Augmented Generation (RAG)
+
+## 👨‍💻 Developer
+
+**GitHub:** [lokeshwar5221](https://github.com/lokeshwar5221)
+
+**Project Repository:** [Aurora Bank FAQ Assistant](https://github.com/lokeshwar5221/Aurora-Bank-FAQ-Assistant)
 
 ---
 
-## Troubleshooting
+## ⭐ Support
 
-| Problem | Fix |
-|---|---|
-| "No AI key, excerpt mode" in the sidebar | Create `.env` with `GROQ_API_KEY`, then restart |
-| Warning that TF-IDF fallback is in use | The embedding model could not download. Check internet, run `pip install fastembed`, restart |
-| `TypeError ... use_container_width` | Install the pinned version: `pip install "streamlit>=1.40,<1.50"` |
-| Model name error from Groq | Set `MODEL_NAME` in `.env` to a model available in your Groq console |
-| Answers seem to refuse too much | Lower the relevance threshold in the sidebar |
+If you find this project useful or interesting, please consider giving the repository a ⭐ on GitHub.
 
----
-
-## Possible extensions
-Hybrid keyword + semantic search, a re-ranker, chat feedback buttons, multilingual support (Telugu / Hindi), an EMI calculator tab, and ChromaDB or FAISS in place of the built-in vector index.
+<p align="center">
+  <b>Making Banking Information Easier to Understand with AI! 🏦🤖</b>
+</p>
