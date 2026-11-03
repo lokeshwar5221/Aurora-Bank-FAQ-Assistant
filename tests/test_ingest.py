@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from datetime import date
 from pathlib import Path
 
 from rag.config import POLICY_DIR
@@ -109,6 +110,37 @@ def test_policy_version_resolution_uses_latest_date_and_rejects_ambiguity():
                           version="2", supersedes=["1"])
     active, conflicts = _active_policy_documents([replaced, replacement])
     assert active == [replacement]
+    assert conflicts == []
+
+
+def test_future_policy_is_excluded_before_supersession_resolution():
+    from rag.ingest import Document
+
+    current = Document("current", "Policy", "current.md", "Current rules.",
+                       policy_id="same", version="1", effective_date="2026-01-01")
+    future_replacement = Document(
+        "future", "Policy", "future.md", "Future rules.", policy_id="same",
+        version="2", effective_date="2099-01-01", supersedes=["1"],
+    )
+    active, conflicts = _active_policy_documents(
+        [current, future_replacement], as_of_date=date(2026, 11, 3)
+    )
+
+    assert active == [current]
+    assert conflicts == []
+
+
+def test_future_only_policy_is_not_active_or_conflicting():
+    from rag.ingest import Document
+
+    future = Document("future", "Policy", "future.md", "Future rules.",
+                      policy_id="future-only", effective_date="2099-01-01")
+
+    active, conflicts = _active_policy_documents(
+        [future], as_of_date=date(2026, 11, 3)
+    )
+
+    assert active == []
     assert conflicts == []
 
 

@@ -10,11 +10,11 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from rag.config import POLICY_DIR  # noqa: E402
-from rag.generator import (NOT_FOUND_TOKEN, build_messages, smalltalk_reply,  # noqa: E402
-                           unverified_numbers)
+from rag.generator import NOT_FOUND_TOKEN, build_messages, smalltalk_reply  # noqa: E402
 from rag.ingest import Document, chunk_document  # noqa: E402
 from rag.pipeline import KnowledgeBase  # noqa: E402
 from rag.retriever import contextualize_query  # noqa: E402
+from rag.verification import unverified_numbers  # noqa: E402
 
 _KB = None
 

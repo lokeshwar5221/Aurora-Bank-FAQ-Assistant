@@ -14,8 +14,9 @@ Built with **Python, Streamlit, Groq (OpenAI-compatible API), sentence embedding
 |---|---|---|
 | Policy Document Ingestion | `rag/ingest.py` | Loads `.md`, `.txt`, `.pdf`; splits on headings into topic-focused passages that remember document, section and page |
 | Embedding and Indexing | `rag/embedder.py`, `rag/vectorstore.py` | MiniLM sentence embeddings (TF-IDF fallback); cosine-similarity vector index saved on disk and rebuilt only when documents change |
-| Retriever | `rag/retriever.py` | Top-k similarity search with a relevance threshold; only explicit follow-up wording reuses the previous topic |
-| Answer Generator | `rag/generator.py` | Prompt templates, Groq LLM streaming, refusal handling, citation-scoped figure checks |
+| Retriever | `rag/retriever.py` | Top-k similarity search with a relevance threshold; follow-ups retain the resolved topic unless a new topic is introduced |
+| Answer Generator | `rag/generator.py` | Prompt templates, Groq LLM streaming and refusal handling |
+| Answer Verification | `rag/verification.py` | Citation and numeric-claim checks, kept separate from generation |
 | Chat Interface | `app.py`, `assets/style.css` | Streamlit chat with topic tabs of ready-made questions, streaming answers, numbered source slips, knowledge-base browser, document upload |
 
 | Course concept | Where |
@@ -29,7 +30,7 @@ Built with **Python, Streamlit, Groq (OpenAI-compatible API), sentence embedding
 1. **Similarity gate**: if the best passage scores below the threshold, the LLM is never called and the app answers "not covered in the policy documents".
 2. **Grounded prompt**: the model may use only the numbered passages; guessing, estimating and outside knowledge are forbidden; every fact must cite `[n]`.
 3. **Refusal token**: if the passages lack the answer, the model must output `[[NOT_IN_POLICY]]`, which the app converts into a clear "cannot answer" message.
-4. **Citation-scoped checks**: numeric claims are checked against the passage(s) they cite, including product, conditions and units; missing or invalid citations are flagged. These checks are a warning, not proof that all factual claims are correct.
+4. **Citation-scoped checks**: numeric claims are checked against the passage(s) they cite, including product, conditions, table headers, and units. Formatting such as Markdown, non-breaking spaces, and equivalent currency magnitudes is normalized. Missing citations, invalid citations, and unsupported numbers are reported separately. These checks are warnings, not proof that all factual claims are correct.
 
 ### Policy versions
 
@@ -44,7 +45,7 @@ supersedes: 2.0, previous-policy.md
 ---
 ```
 
-Documents are grouped by `policy_id` (or title when no ID is supplied). An explicit `supersedes` entry may identify an older document by version, filename or document ID. Otherwise the unique latest ISO `effective_date` is used. If a group has no unique active version, the whole group is excluded from retrieval and reported on the knowledge-base page rather than asking the model to choose. Version and effective-date metadata stay attached to retrieved passages and citations.
+Documents are grouped by `policy_id` (or title when no ID is supplied). Selection uses the current date as its explicit as-of date and excludes future-effective revisions before resolving supersession. An explicit `supersedes` entry may identify an older document by version, filename or document ID. Otherwise the unique latest eligible ISO `effective_date` is used. If a group has no unique active version, the whole group is excluded from retrieval and reported on the knowledge-base page rather than asking the model to choose. Version and effective-date metadata stay attached to retrieved passages and citations.
 
 ---
 
@@ -60,7 +61,8 @@ aurora-bank-faq-assistant/
 │   ├── embedder.py         # embeddings (MiniLM, TF-IDF fallback)
 │   ├── vectorstore.py      # vector index + similarity search + persistence
 │   ├── retriever.py        # top-k retrieval + threshold gate
-│   ├── generator.py        # prompts, LLM client, guardrails
+│   ├── generator.py        # prompts, LLM client and streaming
+│   ├── verification.py     # citation and numeric-claim checks
 │   └── pipeline.py         # KnowledgeBase: ingest -> embed -> index
 ├── data/policies/          # 10 bank policy documents (the knowledge base)
 ├── data/uploads/           # documents added from the UI
@@ -135,7 +137,9 @@ GROQ_API_KEY = "gsk_your_key_here"
 - **Command-line demo:** `python scripts/ask.py "What is the NEFT charge?"` shows every retrieved passage with its similarity score. This is useful to explain retrieval in a viva.
 - **Add your own documents:** drop `.md`, `.txt` or `.pdf` files into `data/policies/` (or upload in the *Knowledge base* page). The index rebuilds automatically.
 
-The offline suite uses TF-IDF and simulated LLM streams. A separate 10-case evaluation using the semantic embedder and Groq is recorded in `tests/evaluations/live_results.json` (6 passed, 4 failed); the failed cases expose missing citations and an unsupported condition paraphrase. To collect fresh outputs and judgments:
+The offline suite uses TF-IDF and simulated LLM streams. It also covers unsupported banking questions, personal-balance refusals, ambiguous policy conflicts, multi-turn follow-ups, and interrupted API streams. The historical 10-case evaluation in `tests/evaluations/live_results.json` contains 5 automated passes and 5 failures; it predates the current evaluation cases and includes a credit-card question that differs from the current script. It must not be treated as reproducible evidence for the current code.
+
+Automated evaluations check expected terms, retrieved sources, citations, and numeric claims. They do not prove complete factual correctness or replace a human review of each answer and its source passages. Each current-format live report stores the case-set version and digest, code commit, working-tree state and diff digest (when dirty), as-of date, retrieved passages, actual output, and categorized verifier issues. It also records offline demonstrations for policy updates, ambiguous revisions, and simulated interrupted API responses. A new report is written to `tests/evaluations/live_results_v5.json` by default; existing reports are not overwritten. To collect fresh outputs and judgments:
 
 ```bash
 python scripts/evaluate_live.py --confirm-live
@@ -144,7 +148,7 @@ python scripts/evaluate_live.py --confirm-live
 This sends questions and retrieved passages from the bundled fictional policies to Groq and may consume API quota. The report records expected answers, retrieved passages, actual model output and pass/fail judgments. To recompute judgments from saved output without API calls:
 
 ```bash
-python scripts/evaluate_live.py --rejudge tests/evaluations/live_results.json
+python scripts/evaluate_live.py --rejudge tests/evaluations/live_results_v5.json
 ```
 
 The local test environment reported Python 3.13.13, pytest 8.4.2, Streamlit 1.49.1, NumPy 2.5.4, scikit-learn 1.9.1, FastEmbed 0.9.1, pypdf 6.21.4 and OpenAI SDK 3.41.0. These are recorded environment versions, not a fully locked dependency set.

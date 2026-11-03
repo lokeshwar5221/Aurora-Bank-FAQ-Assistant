@@ -16,9 +16,10 @@ import streamlit as st
 from rag.config import (ASSISTANT_NAME, BANK_NAME, DEFAULT_TOP_K, POLICY_DIR,
                         SUPPORTED_EXTENSIONS, UPLOAD_DIR, get_llm_settings)
 from rag.generator import (NOT_FOUND_MESSAGE, LLMClient, LLMError, extractive_answer,
-                           smalltalk_reply, stream_answer, verification_warnings)
+                           smalltalk_reply, stream_answer)
 from rag.pipeline import KnowledgeBase
 from rag.retriever import Hit, contextualize_query
+from rag.verification import verification_warnings
  
 # ============================================================
 # 1. Page config + styling

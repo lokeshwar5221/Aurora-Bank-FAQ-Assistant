@@ -61,17 +61,26 @@ _TOPIC_PATTERNS = (
 
 
 def contextualize_query(question: str, history: list[dict]) -> str:
-    """Attach prior context only when the wording signals a follow-up."""
+    """Attach the latest resolved topic to follow-ups, skipping topicless turns."""
     is_follow_up = bool(_FOLLOW_UP_RE.match(question) or _CONDITION_FOLLOW_UP_RE.match(question))
-    if is_follow_up:
-        for msg in reversed(history):
-            if msg.get("role") == "user" and isinstance(msg.get("content"), str):
-                previous = msg["content"]
-                new_topics = [pattern for pattern in _TOPIC_PATTERNS if pattern.search(question)]
-                previous_topics = [pattern for pattern in _TOPIC_PATTERNS if pattern.search(previous)]
-                if new_topics and not any(topic in previous_topics for topic in new_topics):
-                    return question
-                return f"{previous} {question}"
+    if not is_follow_up:
+        return question
+
+    user_messages = [
+        msg["content"] for msg in history
+        if msg.get("role") == "user" and isinstance(msg.get("content"), str)
+    ]
+    if user_messages:
+        topic_anchor = next(
+            (previous for previous in reversed(user_messages)
+             if any(pattern.search(previous) for pattern in _TOPIC_PATTERNS)),
+            user_messages[-1],
+        )
+        new_topics = [pattern for pattern in _TOPIC_PATTERNS if pattern.search(question)]
+        anchor_topics = [pattern for pattern in _TOPIC_PATTERNS if pattern.search(topic_anchor)]
+        if new_topics and not any(topic in anchor_topics for topic in new_topics):
+            return question
+        return f"{topic_anchor} {question}"
     return question
 
 

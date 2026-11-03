@@ -17,8 +17,11 @@ def _policy_key(document: Document) -> str:
     return (document.policy_id or document.title).strip().casefold()
 
 
-def _active_policy_documents(documents: list[Document]) -> tuple[list[Document], list[str]]:
-    """Keep only an unambiguous active revision for each policy family."""
+def _active_policy_documents(
+    documents: list[Document], as_of_date: date | None = None
+) -> tuple[list[Document], list[str]]:
+    """Keep only an unambiguous revision effective on the as-of date."""
+    as_of_date = as_of_date or date.today()
     groups: dict[str, list[Document]] = {}
     for document in documents:
         groups.setdefault(_policy_key(document), []).append(document)
@@ -26,6 +29,18 @@ def _active_policy_documents(documents: list[Document]) -> tuple[list[Document],
     active: list[Document] = []
     conflicts: list[str] = []
     for key, group in groups.items():
+        dated_group = []
+        for document in group:
+            try:
+                effective = date.fromisoformat(document.effective_date or "")
+            except ValueError:
+                dated_group.append(document)
+            else:
+                if effective <= as_of_date:
+                    dated_group.append(document)
+        group = dated_group
+        if not group:
+            continue
         distinct: dict[tuple[str, str | None, str | None, tuple[str, ...]], Document] = {}
         for document in group:
             identity = (
@@ -82,14 +97,20 @@ class KnowledgeBase:
         self.store: VectorStore | None = None
         self.fallback_reason: str | None = None
         self.policy_conflicts: list[str] = []
+        self.as_of_date: date | None = None
         self.loaded_from_cache = False
         self.build_seconds = 0.0
 
     # ---- build ------------------------------------------------------------
-    def build(self, persist: bool = True) -> "KnowledgeBase":
+    def build(
+        self, persist: bool = True, as_of_date: date | None = None
+    ) -> "KnowledgeBase":
         t0 = time.perf_counter()
+        self.as_of_date = as_of_date or date.today()
         self.documents = load_documents(self.folders, self.ingestion_errors)  # 1. ingest
-        active_documents, self.policy_conflicts = _active_policy_documents(self.documents)
+        active_documents, self.policy_conflicts = _active_policy_documents(
+            self.documents, self.as_of_date
+        )
         self.chunks = build_chunks(active_documents)                  # 2. chunk
         self.embedder, self.fallback_reason = get_embedder(self.embedder_preference)  # 3. embed
 

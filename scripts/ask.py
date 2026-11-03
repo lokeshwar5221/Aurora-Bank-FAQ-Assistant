@@ -8,9 +8,9 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from rag.config import POLICY_DIR, UPLOAD_DIR, get_llm_settings  # noqa: E402
-from rag.generator import (NOT_FOUND_MESSAGE, LLMClient, stream_answer,  # noqa: E402
-                           unverified_numbers)
+from rag.generator import NOT_FOUND_MESSAGE, LLMClient, stream_answer  # noqa: E402
 from rag.pipeline import KnowledgeBase  # noqa: E402
+from rag.verification import unverified_numbers  # noqa: E402
 
 
 def main() -> None:
