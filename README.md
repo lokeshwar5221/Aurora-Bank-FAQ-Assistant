@@ -137,18 +137,20 @@ GROQ_API_KEY = "gsk_your_key_here"
 - **Command-line demo:** `python scripts/ask.py "What is the NEFT charge?"` shows every retrieved passage with its similarity score. This is useful to explain retrieval in a viva.
 - **Add your own documents:** drop `.md`, `.txt` or `.pdf` files into `data/policies/` (or upload in the *Knowledge base* page). The index rebuilds automatically.
 
-The offline suite uses TF-IDF and simulated LLM streams. It also covers unsupported banking questions, personal-balance refusals, ambiguous policy conflicts, multi-turn follow-ups, and interrupted API streams. The historical 10-case evaluation in `tests/evaluations/live_results.json` contains 5 automated passes and 5 failures; it predates the current evaluation cases and includes a credit-card question that differs from the current script. It must not be treated as reproducible evidence for the current code.
+The offline suite uses TF-IDF and simulated LLM streams. It also covers unsupported banking questions, personal-balance refusals, ambiguous policy conflicts, multi-turn follow-ups, and interrupted API streams. The historical 10-case evaluation in `tests/evaluations/live_results.json` contains 5 automated passes and 5 failures; it predates the current evaluation cases and must not be treated as evidence for the current code.
 
-Automated evaluations check expected terms, retrieved sources, citations, and numeric claims. They do not prove complete factual correctness or replace a human review of each answer and its source passages. Each current-format live report stores the case-set version and digest, code commit, working-tree state and diff digest (when dirty), as-of date, retrieved passages, actual output, and categorized verifier issues. It also records offline demonstrations for policy updates, ambiguous revisions, and simulated interrupted API responses. A new report is written to `tests/evaluations/live_results_v5.json` by default; existing reports are not overwritten. To collect fresh outputs and judgments:
+The current submission's [live demonstration](tests/evaluations/live_demo_v6.md) includes a sourced answer, unsupported-question refusal, multi-turn follow-up, effective-dated policy update, policy conflict, and interrupted-stream scenario. Its [evaluation report](tests/evaluations/live_results_v6.json) records 13/13 passing live cases against commit `b700480716b0546c25d1055e37b351f584feae97`, a clean working tree, the case-set digest, retrieved passages, actual model outputs, judgments, and offline demonstration results.
+
+Automated evaluations check expected terms, retrieved sources, citations, and numeric claims. Citation and numeric checks are safeguards; they do not prove every sentence is factually correct or replace human review of answers against their source passages. Each current-format live report stores the case-set version and digest, code commit, working-tree state and diff digest (when dirty), as-of date, retrieved passages, actual output, and categorized verifier issues. It also records offline demonstrations for policy updates, ambiguous revisions, and simulated interrupted API responses. Existing reports are not overwritten. To collect a new run, choose an unused output path:
 
 ```bash
-python scripts/evaluate_live.py --confirm-live
+python scripts/evaluate_live.py --confirm-live --output tests/evaluations/live_results_v7.json
 ```
 
 This sends questions and retrieved passages from the bundled fictional policies to Groq and may consume API quota. The report records expected answers, retrieved passages, actual model output and pass/fail judgments. To recompute judgments from saved output without API calls:
 
 ```bash
-python scripts/evaluate_live.py --rejudge tests/evaluations/live_results_v5.json
+python scripts/evaluate_live.py --rejudge tests/evaluations/live_results_v7.json
 ```
 
 The local test environment reported Python 3.13.13, pytest 8.4.2, Streamlit 1.49.1, NumPy 2.5.4, scikit-learn 1.9.1, FastEmbed 0.9.1, pypdf 6.21.4 and OpenAI SDK 3.41.0. These are recorded environment versions, not a fully locked dependency set.
